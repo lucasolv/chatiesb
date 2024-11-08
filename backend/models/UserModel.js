@@ -9,9 +9,11 @@ module.exports = class UserModel{
                 throw new Error('Erro: Matrícula já cadastrada!')
             }
 
-            const data = [registration,name,password]
+            const threadIds = []
 
-            const [insertedUser] = await db.execute("INSERT INTO users (registration, name, password) VALUES (?, ?, ?)", data)
+            const data = [registration,name,password,JSON.stringify(threadIds)]
+
+            const [insertedUser] = await db.execute("INSERT INTO users (registration, name, password, threadIds) VALUES (?, ?, ?, ?)", data)
 
             return insertedUser
 
@@ -66,6 +68,20 @@ module.exports = class UserModel{
             }
             return operacao[0]
                 
+        } catch (error) {
+            return error.message
+        }
+    }
+    static async saveThreadIds(user){
+        try {
+            const data = [user.threadIds, user.id]
+            const operacao = await db.execute(`UPDATE users SET threadIds = ? WHERE id = ?`, data)
+
+            if(operacao[0].affectedRows === 0){
+                throw new Error("Erro: Usuário não encontrado!")
+                return
+            }
+            return operacao[0]
         } catch (error) {
             return error.message
         }

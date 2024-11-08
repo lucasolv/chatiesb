@@ -45,7 +45,9 @@ module.exports = class UserController{
                 const user = await UserModel.getUserByRegistration(registration)
                 await createUserToken({
                     name: user.name,
-                    id: user.id
+                    id: user.id,
+                    registration: user.registration,
+                    threadIds: JSON.parse(user.threadIds)
                 },req,res)
             }
         } catch (error) {
@@ -97,6 +99,7 @@ module.exports = class UserController{
                 }
                 currentUser = {...response}
                 currentUser.password = undefined
+                currentUser.threadIds = JSON.parse(currentUser.threadIds)
                 res.status(200).json(currentUser)
             } catch (error) {
                 res.status(500).json({message: error.message})
