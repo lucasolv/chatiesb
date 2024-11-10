@@ -6,7 +6,7 @@ module.exports = class UserModel{
             const [user] = await db.query('SELECT * FROM users WHERE registration = ?', [registration])
 
             if(user[0]){
-                throw new Error('Erro: Matrícula já cadastrada!')
+                throw new Error('Matrícula já cadastrada!')
             }
 
             const threadIds = []
@@ -27,7 +27,7 @@ module.exports = class UserModel{
             if(user[0]){
                 return user[0]
             } else{
-                throw new Error('Erro: Usuário não encontrado!')
+                throw new Error('Usuário não encontrado!')
             }
         } catch (error) {
             return error.message
@@ -39,7 +39,7 @@ module.exports = class UserModel{
             if(user[0]){
                 return user[0]
             } else{
-                throw new Error('Erro: Usuário não encontrado!')
+                throw new Error('Usuário não encontrado!')
             }
         } catch (error) {
             return error.message
@@ -63,7 +63,7 @@ module.exports = class UserModel{
             const operacao = await db.execute(`UPDATE users SET${dataSQL} WHERE id = ?`, data)
 
             if(operacao[0].affectedRows === 0){
-                throw new Error("Erro: Usuário não encontrado!")
+                throw new Error("Usuário não encontrado!")
                 return
             }
             return operacao[0]
@@ -78,7 +78,7 @@ module.exports = class UserModel{
             const operacao = await db.execute(`UPDATE users SET threadIds = ? WHERE id = ?`, data)
 
             if(operacao[0].affectedRows === 0){
-                throw new Error("Erro: Usuário não encontrado!")
+                throw new Error("Usuário não encontrado!")
                 return
             }
             return operacao[0]

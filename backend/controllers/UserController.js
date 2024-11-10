@@ -14,23 +14,23 @@ module.exports = class UserController{
 
         //validations
         if(!name){
-            res.status(422).json({message: 'O nome é obrigatório'})
+            res.status(422).json({message: 'O nome é obrigatório!'})
             return
         }
         if(!registration){
-            res.status(422).json({message: 'A matrícula é obrigatória'})
+            res.status(422).json({message: 'A matrícula é obrigatória!'})
             return
         }
         if(!password){
-            res.status(422).json({message: 'A senha é obrigatória'})
+            res.status(422).json({message: 'A senha é obrigatória!'})
             return
         }
         if(!confirmPassword){
-            res.status(422).json({message: 'A confirmação de senha é obrigatória'})
+            res.status(422).json({message: 'A confirmação de senha é obrigatória!'})
             return
         }
         if(password !== confirmPassword){
-            res.status(422).json({message: 'A senha e a confirmação de senha precisam ser iguais'})
+            res.status(422).json({message: 'A senha e a confirmação de senha precisam ser iguais!'})
             return
         }
 
@@ -39,7 +39,7 @@ module.exports = class UserController{
 
         try {
             const response = await UserModel.insertUser(name, registration, passwordHash)
-            if(response === "Erro: Matrícula já cadastrada!"){
+            if(response === "Matrícula já cadastrada!"){
                 throw new Error(response)
             } else{
                 const user = await UserModel.getUserByRegistration(registration)
@@ -58,18 +58,18 @@ module.exports = class UserController{
         const {registration,password} = req.body
 
         if(!registration){
-            res.status(422).json({message: 'A matrícula é obrigatória'})
+            res.status(422).json({message: 'A matrícula é obrigatória!'})
             return
         }
         if(!password){
-            res.status(422).json({message: 'A senha é obrigatória'})
+            res.status(422).json({message: 'A senha é obrigatória!'})
             return
         }
 
         //check if user exists by registration
         try {
             const response = await UserModel.getUserByRegistration(registration)
-            if(response === "Erro: Usuário não encontrado!"){
+            if(response === "Usuário não encontrado!"){
                 res.status(404).json({message: response})
                 return
             }
@@ -93,7 +93,7 @@ module.exports = class UserController{
             try {
                 const decoded = jwt.verify(token, process.env.JWT_SECRET)
                 const response = await UserModel.getUserByRegistration(decoded.registration)
-                if(response === "Erro: Usuário não encontrado!"){
+                if(response === "Usuário não encontrado!"){
                     res.status(404).json({message: response})
                     return
                 }
@@ -117,7 +117,7 @@ module.exports = class UserController{
         const id = req.params.id
         try {
             const response = await UserModel.getUserById(id)
-            if(response === "Erro: Usuário não encontrado!"){
+            if(response === "Usuário não encontrado!"){
                 res.status(404).json({message: response})
                 return
             }
@@ -141,7 +141,7 @@ module.exports = class UserController{
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         try {
             const response = await UserModel.getUserById(decoded.id)
-            if(response === "Erro: Usuário não encontrado!"){
+            if(response === "Usuário não encontrado!"){
                 res.status(404).json({message: response})
                 return
             }
@@ -150,29 +150,29 @@ module.exports = class UserController{
                 const {name, password, confirmPassword} = req.body
                 //validations
                 if(!name){
-                    res.status(422).json({message: 'O nome é obrigatório'})
+                    res.status(422).json({message: 'O nome é obrigatório!'})
                     return
                 }
                 if(!password){
-                    res.status(422).json({message: 'A senha é obrigatória'})
+                    res.status(422).json({message: 'A senha é obrigatória!'})
                     return
                 }
                 if(!confirmPassword){
-                    res.status(422).json({message: 'A confirmação de senha é obrigatória'})
+                    res.status(422).json({message: 'A confirmação de senha é obrigatória!'})
                     return
                 }
                 if(password !== confirmPassword){
-                    res.status(422).json({message: 'A senha e a confirmação de senha precisam ser iguais'})
+                    res.status(422).json({message: 'A senha e a confirmação de senha precisam ser iguais!'})
                     return
                 }
                 const salt = await bcrypt.genSalt(12)
                 const passwordHash = await bcrypt.hash(password,salt)
                 try {
                     const response = await UserModel.updateUser(name, passwordHash, user.id)
-                    if(response === "Erro: Usuário não encontrado!"){
+                    if(response === "Usuário não encontrado!"){
                         throw new Error(response)
                     } else{
-                        res.status(200).json({message: "Usuário atualizado com sucesso"})
+                        res.status(200).json({message: "Usuário atualizado com sucesso!"})
                     }
                 } catch (error) {
                     res.status(500).json({message: error.message})
