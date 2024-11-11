@@ -12,9 +12,15 @@ module.exports = class AskController {
             let threadId;
             user.threadIds = JSON.parse(user.threadIds);
 
-            if (user.threadIds.length > 0) {
-                const lastThread = user.threadIds[user.threadIds.length - 1];
-                threadId = Object.values(lastThread)[0];
+            if (user.threadIds.length > 0 && !req.body.createNewThread) {
+                const chosenIndex = req.body.chosenThread !== undefined ? req.body.chosenThread - 1 : user.threadIds.length - 1;
+
+                if (chosenIndex >= 0 && chosenIndex < user.threadIds.length) {
+                    const chosenThread = user.threadIds[chosenIndex];
+                    threadId = Object.values(chosenThread)[0];
+                } else {
+                    return res.status(400).json({ error: "Índice da thread escolhido é inválido." });
+                }
             } else if (req.body.createNewThread) {
                 if(!req.body.threadTitle){
                     return res.status(422).json({ error: "Título da conversa não informado." });
