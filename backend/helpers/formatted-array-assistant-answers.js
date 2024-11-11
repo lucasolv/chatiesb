@@ -5,7 +5,10 @@ module.exports = function formattedArray(array) {
         const question = array[i].split(" > ")[1];
         const answer = array[i + 1] ? array[i + 1].split(" > ")[1] : "";
 
-        result.push({ question, answer });
+        result.push(
+            { role: "user", content: question },
+            { role: "assistant", content: answer }
+        );
     }
 
     return result;
