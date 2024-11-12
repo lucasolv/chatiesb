@@ -13,6 +13,7 @@ module.exports = class AskController {
             user.threadIds = JSON.parse(user.threadIds);
 
             if (user.threadIds.length > 0 && !req.body.createNewThread) {
+                //não criar nova thread
                 const chosenIndex = req.body.chosenThread !== undefined ? req.body.chosenThread - 1 : user.threadIds.length - 1;
 
                 if (chosenIndex >= 0 && chosenIndex < user.threadIds.length) {
@@ -22,6 +23,7 @@ module.exports = class AskController {
                     return res.status(400).json({ error: "Índice da thread escolhido é inválido." });
                 }
             } else if (req.body.createNewThread) {
+                //criar nova
                 if(!req.body.threadTitle){
                     return res.status(422).json({ error: "Título da conversa não informado." });
                 }
@@ -33,6 +35,7 @@ module.exports = class AskController {
                 
                 user.threadIds = JSON.stringify(user.threadIds)
                 await userModel.saveThreadIds(user)
+                user.threadIds = JSON.parse(user.threadIds)
             } else {
                 return res.status(400).json({ error: "Nenhuma conversa existente." });
             }
@@ -52,7 +55,7 @@ module.exports = class AskController {
                 const responseMessages = messages.data.reverse().map(
                     (message) => `${message.role} > ${removerCitacoes(message.content[0].text.value)}`
                 );
-                res.status(200).json(formattedArray(responseMessages));
+                res.status(200).json({threadId: user.threadIds.length ,messages: formattedArray(responseMessages)});
             } else {
                 console.log(`Run status: ${run.status}`);
                 res.status(500).json({ error: "Erro no processamento da pergunta." });

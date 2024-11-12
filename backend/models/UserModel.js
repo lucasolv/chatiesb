@@ -76,13 +76,14 @@ module.exports = class UserModel{
         try {
             const data = [user.threadIds, user.id]
             const operacao = await db.execute(`UPDATE users SET threadIds = ? WHERE id = ?`, data)
-
+            
             if(operacao[0].affectedRows === 0){
                 throw new Error("Usuário não encontrado!")
                 return
             }
             return operacao[0]
         } catch (error) {
+            console.log(error.message)
             return error.message
         }
     }
