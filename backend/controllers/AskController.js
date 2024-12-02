@@ -52,10 +52,10 @@ module.exports = class AskController {
 
             if (run.status === 'completed') {
                 const messages = await openai.beta.threads.messages.list(run.thread_id);
-                const responseMessages = messages.data.reverse().map(
+                const responseMessages = messages.data.map(
                     (message) => `${message.role} > ${removerCitacoes(message.content[0].text.value)}`
                 );
-                res.status(200).json({threadId: user.threadIds.length ,messages: formattedArray(responseMessages)});
+                res.status(200).json({threadId: user.threadIds.length, conversationTitle: user.threadIds[req.body.chosenThread - 1].threadTitle, conversation: formattedArray(responseMessages)});
             } else {
                 console.log(`Run status: ${run.status}`);
                 res.status(500).json({ error: "Erro no processamento da pergunta." });
