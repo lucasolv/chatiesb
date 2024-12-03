@@ -87,4 +87,27 @@ module.exports = class UserModel{
             return error.message
         }
     }
+    static async addNewUserThread(thread){
+        try {
+            const data = [thread.threadTitle, thread.userId, thread.openAIThreadId, thread.arrayIndex]
+
+            const [insertedThread] = await db.execute("INSERT INTO threads (threadTitle, userId, openAIThreadId, arrayIndex) VALUES (?, ?, ?, ?)", data)
+
+            return insertedThread
+        } catch (error) {
+            return error.message
+        }
+    }
+    static async getThreadsByUserId(userId){
+        try {
+            const [threads] = await db.query('SELECT * FROM threads WHERE userId = ?', [userId])
+            if(threads.length > 0){
+                return threads
+            } else{
+                throw new Error('Therad não encontrada!')
+            }
+        } catch (error) {
+            return error.message
+        }
+    } 
 }
