@@ -109,5 +109,18 @@ module.exports = class UserModel{
         } catch (error) {
             return error.message
         }
-    } 
+    }
+    static async deleteChat(openAIThreadId){
+        try {
+            const [result] = await db.query('DELETE FROM threads WHERE openAIThreadId = ?', [openAIThreadId]);
+    
+            if (result.affectedRows > 0) {
+                return { message: 'Thread deletada com sucesso!' };
+            } else {
+                throw new Error('Thread não encontrada!');
+            }
+        } catch (error) {
+            return error.message;
+        }
+    }
 }

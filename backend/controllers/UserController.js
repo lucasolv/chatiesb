@@ -185,4 +185,54 @@ module.exports = class UserController{
             res.status(500).json({message: error.message})
         }
     }
+    static async getUserChats (req, res){
+        let currentUser
+        if(req.headers.authorization){
+            const token = getToken(req)
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET)
+                const response = await UserModel.getUserByRegistration(decoded.registration)
+                if(response === "Usuário não encontrado!"){
+                    res.status(404).json({message: response})
+                    return
+                }
+                currentUser = {...response}
+                currentUser.password = undefined
+                currentUser.threadIds = JSON.parse(currentUser.threadIds)
+                const userThreads = await UserModel.getThreadsByUserId(currentUser.id)
+                res.status(200).json({currentUser, userThreads})
+            } catch (error) {
+                res.status(500).json({message: error.message})
+            }
+        } else{
+            currentUser = null
+            res.status(200).send(currentUser)
+        }
+    }
+    static async deleteChat(req, res){
+        let currentUser
+        if(req.headers.authorization){
+            const token = getToken(req)
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET)
+                const response = await UserModel.getUserByRegistration(decoded.registration)
+                if(response === "Usuário não encontrado!"){
+                    res.status(404).json({message: response})
+                    return
+                }
+                currentUser = {...response}
+                currentUser.password = undefined
+                if(req.params.openAIThreadId){
+                    const response = await UserModel.deleteChat(req.params.openAIThreadId)
+                } else{
+                    res.status(200).send({"message": "O id da thread é obrigatório!"})
+                }
+            } catch (error) {
+                res.status(500).json({message: error.message})
+            }
+        } else{
+            currentUser = null
+            res.status(200).send(currentUser)
+        }
+    }
 }
